@@ -1,6 +1,6 @@
-# adsb2dd
+# adsb2dd bootleg
 
-Convert ADSB data to delay-Doppler truth - see a live instance at [http://adsb2dd.30hours.dev](http://adsb2dd.30hours.dev).
+Convert ADSB data to delay-Doppler truth
 
 ## Features
 
