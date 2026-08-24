@@ -1,4 +1,4 @@
-# adsb2dd bootleg
+# adsb2dd-contrail
 
 Convert ADSB data to delay-Doppler truth
 
