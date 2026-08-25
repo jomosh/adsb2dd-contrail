@@ -7,7 +7,7 @@ Convert ADSB data to delay-Doppler truth
 - Provides an API to input receiver/transmitter coordinates, radar center frequency and [tar1090](https://github.com/wiedehopf/tar1090) server.
 - A web front-end calculator is provided to generate a correct API endpoint.
 - Outputs JSON data with a delay in km and Doppler in Hz.
-- Use the JSON output to map truth onto a delay-Doppler map, for example in [blah2](http://github.com/30hours/blah2).
+- Use the JSON output to map truth onto a delay-Doppler map, for example in [blah2-contrail](https://github.com/jomosh/blah2-contrail).
 
 ## Usage
 
@@ -16,8 +16,8 @@ Convert ADSB data to delay-Doppler truth
 - Run the docker compose command.
 
 ```
-sudo git clone http://github.com/jomosh/adsb2dd /opt/adsb2dd
-cd /opt/adsb2dd
+sudo git clone https://github.com/jomosh/adsb2dd-contrail /opt/adsb2dd-contrail
+cd /opt/adsb2dd-contrail
 sudo docker compose up -d
 ```
 
@@ -27,7 +27,7 @@ The API front-end is available at [http://localhost:49155](http://localhost:4915
 
 The delay-Doppler data is computed as follows:
 
-- The [tar1090](https://github.com/wiedehopf/tar1090) server provides the latitude, longitude and altitude of aircraft at the endpoint `/data/aircraft.json` - an example from a live server is [http://adsb.30hours.dev/data/aircraft.json](http://adsb.30hours.dev/data/aircraft.json). The default data update rate is once per second. A timestamp is provided to match coordinates with a time.
+- The [tar1090](https://github.com/wiedehopf/tar1090) server provides the latitude, longitude and altitude of aircraft at the endpoint `/data/aircraft.json`. The default data update rate is once per second. A timestamp is provided to match coordinates with a time.
 - The bistatic range of each aircraft is computed using `distance_rx_to_target + distance_tx_to_target - distance_rx_to_rx`. The latitude, longitude and altitude is converted to [ECEF](https://en.wikipedia.org/wiki/Earth-centered,_Earth-fixed_coordinate_system) coordinates which means distances can be computed with a simple `norm`. 
 - The bistatic Doppler by definition is the rate-of-change of the bistatic range. Unfortunately it's well known that [differentiation amplifies noise](https://dsp.stackexchange.com/questions/16540/derivative-of-noisy-signal) - as the bistatic range data has a small amount of noise, the Doppler values have even larger noise. We also require a causal solution (dependent only on previous values) which means we can't use a more accurate [Savitzky Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). The approach here is to use less accurate moving average filter to smooth the bistatic rangedata prior to differentation.
 - Currently computing a smoothed derivative by finding the median on the last *k* samples of the bistatic range vector. This is by no means optimal - however it seems to work reasonably well and follow targets with *k=10*. Note this is causal and generally slightly lags the truth since we're using previous samples unweighted.
